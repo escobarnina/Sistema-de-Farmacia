@@ -55,12 +55,23 @@ function Productos() {
 
   return (
     <div>
-      <div className="header">
+      <div className="header header-productos">
         <div>
           <h1>💊 Productos</h1>
           <p>Gestión de medicamentos e inventario</p>
         </div>
+        <div style={{display:'flex', gap:'12px'}}>
+          <div className="header-badge">
+            <div className="amount">{productos.filter(p=>p.activo).length}</div>
+            <div className="label">Productos activos</div>
+          </div>
+          <div className="header-badge">
+            <div className="amount" style={{color:'#fde68a'}}>{productos.filter(p=>p.stock<=p.stock_minimo).length}</div>
+            <div className="label">Stock bajo</div>
+          </div>
+        </div>
       </div>
+
       <div className="content">
         <div className="page-header">
           <h2>Inventario de Productos</h2>
@@ -71,7 +82,7 @@ function Productos() {
         <div className="search-bar">
           <input placeholder="🔍 Buscar producto..." value={busqueda} onChange={e => setBusqueda(e.target.value)} />
         </div>
-        <div className="card">
+        <div className="table-wrap">
           <table>
             <thead>
               <tr>
@@ -80,21 +91,27 @@ function Productos() {
               </tr>
             </thead>
             <tbody>
-              {filtrados.map(p => (
+              {filtrados.length === 0 ? (
+                <tr><td colSpan="7"><div className="empty-state">Sin productos registrados</div></td></tr>
+              ) : filtrados.map(p => (
                 <tr key={p.id}>
                   <td><strong>{p.nombre}</strong></td>
                   <td>{p.categoria_nombre || '—'}</td>
                   <td>Bs. {p.precio_compra}</td>
                   <td>Bs. {p.precio_venta}</td>
                   <td>
-                    <span className={`badge ${p.stock <= p.stock_minimo ? 'badge-danger' : 'badge-success'}`}>
-                      {p.stock}
+                    <span className={`badge ${p.stock <= p.stock_minimo ? 'badge-danger' : p.stock <= p.stock_minimo * 2 ? 'badge-warning' : 'badge-success'}`}>
+                      {p.stock} unid.
                     </span>
                   </td>
-                  <td><span className={`badge ${p.activo ? 'badge-success' : 'badge-danger'}`}>{p.activo ? 'Activo' : 'Inactivo'}</span></td>
-                  <td style={{display:'flex',gap:'8px'}}>
-                    <button className="btn btn-outline" style={{padding:'4px 10px'}} onClick={() => editar(p)}>✏️</button>
-                    <button className="btn btn-danger" style={{padding:'4px 10px'}} onClick={() => eliminar(p.id)}>🗑️</button>
+                  <td>
+                    <span className={`badge ${p.activo ? 'badge-success' : 'badge-danger'}`}>
+                      {p.activo ? 'Activo' : 'Inactivo'}
+                    </span>
+                  </td>
+                  <td style={{display:'flex', gap:'6px'}}>
+                    <button className="btn btn-outline btn-sm" onClick={() => editar(p)}>✏️ Editar</button>
+                    <button className="btn btn-danger btn-sm" onClick={() => eliminar(p.id)}>🗑️</button>
                   </td>
                 </tr>
               ))}
@@ -106,7 +123,7 @@ function Productos() {
       {modal && (
         <div className="modal-overlay" onClick={() => setModal(false)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
-            <h2>{editando ? 'Editar Producto' : 'Nuevo Producto'}</h2>
+            <h2>{editando ? '✏️ Editar Producto' : '💊 Nuevo Producto'}</h2>
             <div className="form-grid">
               <div className="form-group" style={{gridColumn:'1/-1'}}>
                 <label>Nombre del medicamento</label>
