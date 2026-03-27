@@ -5,6 +5,8 @@ from productos.views import ProductoViewSet, CategoriaViewSet
 from clientes.views import ClienteViewSet
 from ventas.views import VentaViewSet
 from proveedores.views import ProveedorViewSet
+from graphene_django.views import GraphQLView
+from django.views.decorators.csrf import csrf_exempt
 
 router = DefaultRouter()
 router.register(r"productos", ProductoViewSet)
@@ -16,4 +18,5 @@ router.register(r"proveedores", ProveedorViewSet)
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),
+    path("graphql/", csrf_exempt(GraphQLView.as_view(graphiql=True))),
 ]

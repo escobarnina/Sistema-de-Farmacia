@@ -6,11 +6,11 @@ Sistema de gestión integral para farmacias con módulos de productos, clientes,
 
 ## Tecnologías
 
-| Capa          | Tecnología                                          |
-|---------------|-----------------------------------------------------|
-| Backend       | Python 3, Django 4, Django REST Framework, CORS     |
-| Frontend      | React 19, React Router, Axios                       |
-| Base de datos | PostgreSQL                                          |
+| Capa          | Tecnología                                                      |
+|---------------|-----------------------------------------------------------------|
+| Backend       | Python 3, Django 4, Django REST Framework, Graphene-Django, CORS |
+| Frontend      | React 19, React Router, Axios                                   |
+| Base de datos | PostgreSQL                                                      |
 
 ---
 
@@ -19,10 +19,10 @@ Sistema de gestión integral para farmacias con módulos de productos, clientes,
 ```
 Sistema-de-Farmacia/
 ├── backend/
-│   ├── core/           # Configuración Django (settings, urls)
-│   ├── productos/      # Gestión de productos y categorías
-│   ├── clientes/       # Gestión de clientes
-│   ├── ventas/         # Registro de ventas y detalle de venta
+│   ├── core/           # Configuración Django (settings, urls, schema GraphQL raíz)
+│   ├── productos/      # Gestión de productos y categorías (REST + GraphQL)
+│   ├── clientes/       # Gestión de clientes (REST + GraphQL)
+│   ├── ventas/         # Registro de ventas y detalle de venta (REST + GraphQL)
 │   ├── proveedores/    # Gestión de proveedores y distribuidores
 │   ├── reportes/       # Módulo de reportes
 │   └── manage.py
@@ -90,6 +90,49 @@ Base URL: `http://localhost:8000/api/`
 
 ---
 
+## API GraphQL
+
+Endpoint: `http://localhost:8000/graphql/`
+
+Interfaz interactiva GraphiQL disponible en el mismo endpoint desde el navegador.
+
+**Queries disponibles:**
+
+```graphql
+# Productos
+productos { id nombre precioVenta stock stockBajo }
+producto(id: 1) { id nombre }
+categorias { id nombre }
+productosStockBajo { id nombre stock }
+
+# Clientes
+clientes { id nombre ci telefono }
+cliente(id: 1) { id nombre }
+
+# Ventas
+ventas { id fecha total }
+venta(id: 1) { id fecha total }
+ventasDelMes { id fecha total }
+```
+
+**Mutations disponibles:**
+
+```graphql
+crearProducto(nombre: "Paracetamol", precioCompra: 5.0, precioVenta: 8.0, stock: 100) {
+  producto { id nombre }
+  ok
+}
+
+eliminarProducto(id: 1) { ok }
+
+crearCliente(nombre: "Juan Pérez", ci: "12345678") {
+  cliente { id nombre }
+  ok
+}
+```
+
+---
+
 ## Instalación y ejecución
 
 ### Requisitos previos
@@ -107,7 +150,7 @@ source venv/bin/activate        # Linux/Mac
 venv\Scripts\activate           # Windows
 
 # Instalar dependencias
-pip install django djangorestframework django-cors-headers psycopg2-binary
+pip install django djangorestframework django-cors-headers psycopg2-binary graphene-django
 
 # Configurar la base de datos PostgreSQL en backend/core/settings.py
 DATABASES = {

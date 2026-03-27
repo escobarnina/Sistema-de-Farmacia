@@ -16,6 +16,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "graphene_django",
     "rest_framework",
     "corsheaders",
     "productos",
@@ -95,3 +96,5 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.AllowAny",
     ]
 }
+
+GRAPHENE = {"SCHEMA": "core.schema.schema"}
